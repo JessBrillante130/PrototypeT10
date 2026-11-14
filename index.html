@@ -1,0 +1,628 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Brillante Bank INC.</title>
+    <style>
+        * { box-sizing: border-box; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; margin: 0; padding: 0; }
+
+        body {
+            background-image: linear-gradient(rgba(0, 15, 25, 0.88), rgba(0, 15, 25, 0.88)), url('https://images.unsplash.com/photo-1486406146926-c627a92ad1ab?auto=format&fit=crop&w=1920&q=80');
+            background-size: cover;
+            background-position: center;
+            background-attachment: fixed;
+            color: #f0f4f8;
+            line-height: 1.6;
+            min-height: 100vh;
+        }
+
+        header { background: rgba(0, 26, 44, 0.95); backdrop-filter: blur(8px); color: white; padding: 15px 30px; display: flex; justify-content: space-between; align-items: center; box-shadow: 0 4px 15px rgba(0,0,0,0.5); border-bottom: 2px solid #ffd700; position: sticky; top: 0; z-index: 100; }
+        .logo { font-size: 22px; font-weight: bold; color: #ffd700; letter-spacing: 1px; text-shadow: 0 2px 4px rgba(0,0,0,0.5); }
+        .nav-links { display: flex; gap: 10px; }
+        .nav-btn { background: transparent; border: 1px solid #ffd700; color: #ffd700; padding: 8px 16px; border-radius: 4px; cursor: pointer; font-weight: bold; transition: 0.3s; }
+        .nav-btn:hover, .nav-btn.active { background: #ffd700; color: #001a2c; box-shadow: 0 0 12px rgba(255, 215, 0, 0.6); }
+
+        .container { max-width: 1100px; margin: 30px auto; padding: 0 20px; }
+
+        .card {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            padding: 30px;
+            border-radius: 12px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.4);
+            margin-bottom: 25px;
+            border: 1px solid rgba(255, 215, 0, 0.4);
+            color: #1a202c;
+        }
+
+        h2 { color: #ffd700 !important; text-shadow: 0 2px 6px rgba(0, 0, 0, 0.9); margin-bottom: 15px; font-size: 24px; }
+        h1 { color: #002b49; margin-bottom: 15px; }
+        p { color: #2d3748; }
+
+        .offers-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 20px; margin-top: 20px; }
+
+        .offer-card {
+            background: linear-gradient(145deg, #ffffff 0%, #f4f7fb 100%);
+            border: 1px solid #dce4ec;
+            border-top: 5px solid #ffd700;
+            padding: 25px;
+            border-radius: 12px;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            box-shadow: 0 8px 20px rgba(0,0,0,0.2);
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+        .offer-card:hover {
+            transform: translateY(-7px);
+            box-shadow: 0 12px 30px rgba(255, 215, 0, 0.3);
+            border-color: #ffd700;
+        }
+        .offer-card h3 { color: #002b49; font-size: 20px; margin-bottom: 5px; }
+        .offer-card p { font-size: 14px; color: #4a5568; margin-bottom: 20px; }
+
+        .btn-apply {
+            background: linear-gradient(135deg, #28a745 0%, #1e7e34 100%);
+            color: white; border: none; padding: 12px; border-radius: 6px;
+            cursor: pointer; font-weight: bold; width: 100%; text-align: center;
+            font-size: 15px; box-shadow: 0 4px 12px rgba(40, 167, 69, 0.4);
+            transition: all 0.2s ease;
+        }
+        .btn-apply:hover {
+            background: linear-gradient(135deg, #218838 0%, #155724 100%);
+            box-shadow: 0 6px 16px rgba(255, 215, 0, 0.6);
+        }
+
+        .form-group { margin-bottom: 15px; }
+        label { display: block; font-weight: bold; margin-bottom: 5px; font-size: 14px; color: #002b49; }
+        input, select, textarea { width: 100%; padding: 10px; border: 1px solid #ccc; border-radius: 4px; font-size: 14px; background: #fff; color: #333; }
+        .btn-submit { background: #002b49; color: #ffd700; padding: 12px; border: 1px solid #ffd700; border-radius: 4px; cursor: pointer; font-weight: bold; width: 100%; font-size: 16px; }
+        .btn-submit:hover { background: #003860; }
+
+        .alert { padding: 15px; border-radius: 4px; margin-bottom: 20px; font-weight: bold; display: none; }
+        .alert-danger { background: #f8d7da; color: #721c24; border: 1px solid #f5c6cb; }
+        .alert-success { background: #d4edda; color: #155724; border: 1px solid #c3e6cb; }
+
+        table { width: 100%; border-collapse: collapse; margin-top: 15px; font-size: 14px; background: white; color: #333; }
+        th, td { border: 1px solid #ddd; padding: 10px; text-align: left; }
+        th { background: #002b49; color: #ffd700; }
+        .btn-danger { background: #dc3545; color: white; border: none; padding: 6px 12px; border-radius: 3px; cursor: pointer; }
+        .btn-edit { background: #ffc107; color: #333; border: none; padding: 6px 12px; border-radius: 3px; cursor: pointer; margin-right: 5px; font-weight: bold; }
+
+        .section { display: none; }
+        .section.active { display: block; }
+
+        .modal { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.7); justify-content: center; align-items: center; z-index: 1000; }
+        .modal-content { background: white; padding: 30px; border-radius: 8px; width: 350px; box-shadow: 0 4px 20px rgba(0,0,0,0.5); border-top: 4px solid #ffd700; }
+    </style>
+</head>
+<body>
+
+    <header>
+        <div class="logo">🏦 Brillante Bank INC.</div>
+        <div class="nav-links">
+            <button class="nav-btn active" onclick="showSection('customerView', this)">Offers & Services</button>
+            <button class="nav-btn" onclick="openLoginModal('staff')">Staff Portal</button>
+            <button class="nav-btn" onclick="openLoginModal('admin')">Manager/Admin Portal</button>
+            <button id="logoutBtn" class="nav-btn" style="display:none; background:#dc3545; border:none; color:white;" onclick="logout()">Logout</button>
+        </div>
+    </header>
+
+    <div class="container">
+
+        <!-- 1. CUSTOMER OFFERS VIEW -->
+        <div id="customerView" class="section active">
+            <div class="card">
+                <h1>Welcome to Brillante Bank INC.</h1>
+                <p>Explore our latest loan offers, insurance plans, and investment options tailored for your financial growth.</p>
+            </div>
+            <h2>Current Bank Offers</h2>
+            <div class="offers-grid" id="publicOffersGrid">
+                <!-- Rendered dynamically from server -->
+            </div>
+        </div>
+
+        <!-- 2. APPLICATION FORM -->
+        <div id="applySection" class="section">
+            <div class="card">
+                <button class="btn-danger" style="float: right;" onclick="showSection('customerView')">X Cancel</button>
+                <h2>Application Form: <span id="selectedOfferTitle" style="color: #004080;"></span></h2>
+                <div id="statusAlert" class="alert"></div>
+                <form id="applicationForm" onsubmit="processApplication(event)">
+                    <h3>1. Personal Details</h3>
+                    <div class="form-group">
+                        <label>Full Name:</label>
+                        <input type="text" id="custName" required placeholder="Juan Dela Cruz">
+                    </div>
+                    <div class="form-group">
+                        <label>Email:</label>
+                        <input type="email" id="custEmail" required placeholder="juan@example.com">
+                    </div>
+                    <div class="form-group">
+                        <label>Contact Number:</label>
+                        <input type="text" id="custContact" required placeholder="09123456789">
+                    </div>
+                    <div class="form-group">
+                        <label>Address:</label>
+                        <input type="text" id="custAddress" required placeholder="Enter complete address">
+                    </div>
+
+                    <h3>2. Qualification & Requirement Questions</h3>
+                    <div id="qualificationQuestions"></div>
+
+                    <button type="submit" class="btn-submit">Submit Application</button>
+                </form>
+            </div>
+        </div>
+
+        <!-- 3. STAFF DASHBOARD -->
+        <div id="staffView" class="section">
+            <div class="card">
+                <h2>Staff Dashboard</h2>
+                <p>View verified applications from customers who met the system eligibility rules.</p>
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Applicant Name</th>
+                            <th>Applied Offer</th>
+                            <th>Contact & Address</th>
+                            <th>Requirements / Eligibility Details</th>
+                            <th>Status</th>
+                        </tr>
+                    </thead>
+                    <tbody id="staffTableBody">
+                        <tr><td colspan="5" style="text-align:center;">Loading...</td></tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <!-- 4. MANAGER / ADMIN DASHBOARD -->
+        <div id="managerView" class="section">
+            <div class="card">
+                <h2>Manager / Admin Dashboard</h2>
+                <p>Manage official bank offers and monitor client applications.</p>
+                <button class="btn-submit" style="width: auto; margin-bottom: 20px;" onclick="openOfferModal()">+ Add New Bank Offer</button>
+
+                <h3>Existing Bank Offers</h3>
+                <table>
+                    <thead>
+                        <tr><th>Title</th><th>Type</th><th>Description</th><th>Action</th></tr>
+                    </thead>
+                    <tbody id="managerOffersTable"></tbody>
+                </table>
+
+                <h3 style="margin-top: 30px;">All Customer Applications</h3>
+                <table>
+                    <thead>
+                        <tr><th>Applicant Name</th><th>Offer Applied</th><th>Submitted Details</th><th>Status</th><th>Action</th></tr>
+                    </thead>
+                    <tbody id="managerApplicationsTable"></tbody>
+                </table>
+            </div>
+        </div>
+
+    </div>
+
+    <!-- LOGIN MODAL -->
+    <div id="loginModal" class="modal">
+        <div class="modal-content">
+            <h2 id="modalTitle">Portal Login</h2>
+            <div class="form-group"><label>Username:</label><input type="text" id="loginUser"></div>
+            <div class="form-group"><label>Password:</label><input type="password" id="loginPass"></div>
+            <button class="btn-submit" onclick="executeLogin()">Login</button>
+            <button class="btn-danger" style="width: 100%; margin-top: 10px;" onclick="closeLoginModal()">Cancel</button>
+        </div>
+    </div>
+
+    <!-- ADD/EDIT OFFER MODAL -->
+    <div id="offerModal" class="modal">
+        <div class="modal-content">
+            <h2 id="offerModalTitle">Manage Bank Offer</h2>
+            <form onsubmit="saveOffer(event)">
+                <input type="hidden" id="offerId">
+                <div class="form-group"><label>Offer Title:</label><input type="text" id="offerTitleInput" required></div>
+                <div class="form-group">
+                    <label>Category Type:</label>
+                    <select id="offerTypeInput" required>
+                        <option value="Loan">Loan Offer</option>
+                        <option value="Insurance">Insurance Claim</option>
+                        <option value="Investment">Savings/Investment</option>
+                    </select>
+                </div>
+                <div class="form-group"><label>Description:</label><textarea id="offerDescInput" rows="3" required></textarea></div>
+                <button type="submit" class="btn-submit">Save Offer</button>
+                <button type="button" class="btn-danger" style="width: 100%; margin-top: 10px;" onclick="closeOfferModal()">Cancel</button>
+            </form>
+        </div>
+    </div>
+
+<script>
+    // ---- State ----
+    let offers = [];                 // loaded from server
+    let applications = [];           // loaded from server (staff/admin only)
+    let currentSelectedOffer = null;
+    let pendingRole = '';            // 'staff' | 'admin'
+
+    const token = () => sessionStorage.getItem('bb_token');
+    const role  = () => sessionStorage.getItem('bb_role');
+
+    // ---- API helper ----
+    async function api(action, body = {}) {
+        const r = await fetch('/api/' + action, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ token: token(), ...body })
+        });
+        if (!r.ok) {
+            let msg = 'Request failed (' + r.status + ')';
+            try { const j = await r.json(); if (j.error) msg = j.error; } catch {}
+            throw new Error(msg);
+        }
+        return r.json();
+    }
+
+    // ---- Bootstrap ----
+    window.onload = function () {
+        // Restore session if token still valid on server
+        if (token()) {
+            // Try a list call to see if token is still valid
+            api('list').then(data => {
+                offers = data.offers;
+                applications = data.apps;
+                renderPublicOffers();
+                if (role() === 'staff') { loadStaffDashboard(); }
+                else { loadManagerDashboard(); }
+                document.getElementById('logoutBtn').style.display = 'inline-block';
+            }).catch(() => {
+                // Token stale — reset
+                sessionStorage.removeItem('bb_token');
+                sessionStorage.removeItem('bb_role');
+                loadPublicOffers();
+            });
+        } else {
+            loadPublicOffers();
+        }
+    };
+
+    async function loadPublicOffers() {
+        // Public visitors can't call /api/list (staff-only). Use /api/offers-public
+        // OR — simpler — have the server return offers on a dedicated public endpoint.
+        // For now we rely on the fallback below.
+        try {
+            const data = await api('list');       // will 403 for guests
+            offers = data.offers;
+        } catch {
+            // Fallback: use defaults shipped in HTML (keep in sync with server DEFAULT.offers)
+            offers = [
+                { id: 1, title: 'Emergency Loan', type: 'Loan', desc: 'Fast cash for urgent needs. Requires minimum documentation.' },
+                { id: 2, title: 'Pabahay Loan', type: 'Loan', desc: 'Affordable housing loan. Requires more documentation.' },
+                { id: 3, title: 'Insurance Claim', type: 'Insurance', desc: 'Medical and life claims. Medical Certificate required.' },
+                { id: 4, title: 'Savings Investment', type: 'Investment', desc: 'High-yield long-term savings.' },
+                { id: 5, title: 'Business & Auto Loan', type: 'Loan', desc: 'Grow your business or buy a car. Requires proof of income.' }
+            ];
+        }
+        renderPublicOffers();
+    }
+
+    function renderPublicOffers() {
+        const grid = document.getElementById('publicOffersGrid');
+        grid.innerHTML = offers.map(o => `
+            <div class="offer-card">
+                <div>
+                    <h3>${escapeHtml(o.title)}</h3>
+                    <small style="color:#002b49; font-weight:bold;">[ ${escapeHtml(o.type)} ]</small>
+                    <p style="margin-top:10px;">${escapeHtml(o.desc)}</p>
+                </div>
+                <button class="btn-apply" onclick="openApplicationForm(${o.id})">Apply Now</button>
+            </div>
+        `).join('');
+    }
+
+    function openApplicationForm(offerId) {
+        currentSelectedOffer = offers.find(o => o.id === offerId);
+        if (!currentSelectedOffer) return alert('Offer not found.');
+        document.getElementById('selectedOfferTitle').innerText = currentSelectedOffer.title;
+        document.getElementById('statusAlert').style.display = 'none';
+
+        let qHtml = '';
+        if (currentSelectedOffer.type === 'Loan') {
+            qHtml = `
+                <div class="form-group">
+                    <label>1. How many years have you been a member of Brillante Bank?</label>
+                    <input type="number" id="qYears" required placeholder="Enter years (e.g., 6)">
+                    <small style="color:#666;">Rule: Must be a member for more than 5 years to be eligible.</small>
+                </div>
+                <div class="form-group">
+                    <label>2. Desired Loan Amount (₱):</label>
+                    <input type="number" id="qAmount" required placeholder="Enter amount">
+                </div>`;
+        } else if (currentSelectedOffer.type === 'Insurance') {
+            qHtml = `
+                <div class="form-group">
+                    <label>1. Do you have an official Medical Certificate?</label>
+                    <select id="qMedical" required>
+                        <option value="">-- Choose Option --</option>
+                        <option value="Yes">Yes, I have a valid Medical Certificate</option>
+                        <option value="No">No Medical Certificate</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label>2. Policy Number:</label>
+                    <input type="text" id="qPolicy" required placeholder="Enter policy number">
+                </div>`;
+        } else {
+            qHtml = `
+                <div class="form-group">
+                    <label>1. Initial Deposit / Investment Amount (₱):</label>
+                    <input type="number" id="qInvestAmount" required placeholder="Enter amount">
+                </div>
+                <div class="form-group">
+                    <label>2. Source of Income:</label>
+                    <input type="text" id="qSource" required placeholder="e.g. Business, Salary">
+                </div>`;
+        }
+        document.getElementById('qualificationQuestions').innerHTML = qHtml;
+        showSection('applySection');
+    }
+
+    async function processApplication(e) {
+        e.preventDefault();
+        const alertBox = document.getElementById('statusAlert');
+        alertBox.style.display = 'none';
+
+        const name = document.getElementById('custName').value;
+        const email = document.getElementById('custEmail').value;
+        const contact = document.getElementById('custContact').value;
+        const address = document.getElementById('custAddress').value;
+
+        let isEligible = true;
+        let rejectReason = '';
+        let details = '';
+
+        if (currentSelectedOffer.type === 'Loan') {
+            const years = parseFloat(document.getElementById('qYears').value || 0);
+            const amount = document.getElementById('qAmount').value;
+            details = `Years Member: ${years} yrs | Amount: ₱${amount}`;
+            if (years <= 5) {
+                isEligible = false;
+                rejectReason = 'Application Declined: You must be a registered member for more than 5 years to apply for a loan.';
+            }
+        } else if (currentSelectedOffer.type === 'Insurance') {
+            const hasMedCert = document.getElementById('qMedical').value;
+            const policy = document.getElementById('qPolicy').value;
+            details = `Medical Cert: ${hasMedCert} | Policy No: ${policy}`;
+            if (hasMedCert !== 'Yes') {
+                isEligible = false;
+                rejectReason = 'Application Declined: A valid Medical Certificate is strictly required to process an Insurance Claim.';
+            }
+        } else {
+            const amt = document.getElementById('qInvestAmount').value;
+            const source = document.getElementById('qSource').value;
+            details = `Target Investment: ₱${amt} | Source: ${source}`;
+        }
+
+        if (!isEligible) {
+            alertBox.className = 'alert alert-danger';
+            alertBox.innerHTML = `<strong>DECLINED:</strong> ${escapeHtml(rejectReason)}`;
+            alertBox.style.display = 'block';
+            return;
+        }
+
+        try {
+            await api('apply', {
+                offerId: currentSelectedOffer.id,
+                title: currentSelectedOffer.title,
+                type: currentSelectedOffer.type,
+                name, email, phone: contact,
+                // These two require the server-side patch noted below:
+                address, details
+            });
+            alertBox.className = 'alert alert-success';
+            alertBox.innerHTML = '<strong>SUCCESS!</strong> Your application has been received by the bank.';
+            alertBox.style.display = 'block';
+            document.getElementById('applicationForm').reset();
+        } catch (err) {
+            alertBox.className = 'alert alert-danger';
+            alertBox.innerHTML = '<strong>ERROR:</strong> ' + escapeHtml(err.message);
+            alertBox.style.display = 'block';
+        }
+    }
+
+    // ---- LOGIN ----
+    function openLoginModal(roleName) {
+        pendingRole = roleName;
+        document.getElementById('modalTitle').innerText = (roleName === 'admin' ? 'Manager/Admin' : 'Staff') + ' Login';
+        document.getElementById('loginModal').style.display = 'flex';
+    }
+    function closeLoginModal() {
+        document.getElementById('loginModal').style.display = 'none';
+        document.getElementById('loginUser').value = '';
+        document.getElementById('loginPass').value = '';
+    }
+
+    async function executeLogin() {
+        const u = document.getElementById('loginUser').value;
+        const p = document.getElementById('loginPass').value;
+        try {
+            const data = await api('login', { user: u, pass: p });
+            // Server ignores `token` for login; api() sends token=null but that's fine.
+            if (data.role !== pendingRole) {
+                return alert('This account is not allowed to log in via the ' + pendingRole + ' portal.');
+            }
+            sessionStorage.setItem('bb_token', data.token);
+            sessionStorage.setItem('bb_role', data.role);
+            closeLoginModal();
+            document.getElementById('logoutBtn').style.display = 'inline-block';
+
+            if (data.role === 'staff') {
+                await loadStaffDashboard();
+                showSection('staffView');
+            } else {
+                await loadManagerDashboard();
+                showSection('managerView');
+            }
+        } catch {
+            alert('Invalid credentials.');
+        }
+    }
+
+    function logout() {
+        sessionStorage.removeItem('bb_token');
+        sessionStorage.removeItem('bb_role');
+        document.getElementById('logoutBtn').style.display = 'none';
+        showSection('customerView');
+        alert('Logged out successfully.');
+    }
+
+    // ---- STAFF DASHBOARD ----
+    async function loadStaffDashboard() {
+        const tbody = document.getElementById('staffTableBody');
+        try {
+            const data = await api('list');
+            applications = data.apps;
+            offers = data.offers;
+            tbody.innerHTML = applications.map(a => `
+                <tr>
+                    <td><b>${escapeHtml(a.name)}</b></td>
+                    <td>${escapeHtml(a.title)}</td>
+                    <td>${escapeHtml(a.phone || '')}<br><small>${escapeHtml(a.email || '')}</small></td>
+                    <td>${escapeHtml(a.note || '—')}</td>
+                    <td><span style="color:${a.status === 'Approved' ? 'green' : a.status === 'Rejected' ? 'red' : '#b8860b'}; font-weight:bold;">${escapeHtml(a.status)}</span></td>
+                </tr>
+            `).join('') || `<tr><td colspan="5" style="text-align:center;">No active customer applications.</td></tr>`;
+        } catch (err) {
+            tbody.innerHTML = `<tr><td colspan="5" style="text-align:center;color:#dc3545;">${escapeHtml(err.message)}</td></tr>`;
+        }
+    }
+
+    // ---- MANAGER DASHBOARD ----
+    async function loadManagerDashboard() {
+        try {
+            const data = await api('list');
+            applications = data.apps;
+            offers = data.offers;
+
+            const oTbody = document.getElementById('managerOffersTable');
+            oTbody.innerHTML = offers.map(o => `
+                <tr>
+                    <td><b>${escapeHtml(o.title)}</b></td>
+                    <td>${escapeHtml(o.type)}</td>
+                    <td>${escapeHtml(o.desc)}</td>
+                    <td>
+                        <button class="btn-edit" onclick="editOffer(${o.id})">Edit</button>
+                        <button class="btn-danger" onclick="deleteOffer(${o.id})">Delete</button>
+                    </td>
+                </tr>
+            `).join('');
+
+            const aTbody = document.getElementById('managerApplicationsTable');
+            aTbody.innerHTML = applications.map(a => `
+                <tr>
+                    <td>${escapeHtml(a.name)}</td>
+                    <td>${escapeHtml(a.title)}</td>
+                    <td>${escapeHtml(a.note || '—')}</td>
+                    <td>${escapeHtml(a.status)}</td>
+                    <td>
+                        <button class="btn-edit" onclick="markApp(${a.id}, 'Approved')">Approve</button>
+                        <button class="btn-danger" onclick="markApp(${a.id}, 'Rejected')">Reject</button>
+                    </td>
+                </tr>
+            `).join('') || `<tr><td colspan="5" style="text-align:center;">No applications to manage.</td></tr>`;
+
+            renderPublicOffers();
+        } catch (err) {
+            alert(err.message);
+        }
+    }
+
+    // ---- OFFER CRUD (manager) ----
+    function openOfferModal() {
+        document.getElementById('offerId').value = '';
+        document.getElementById('offerTitleInput').value = '';
+        document.getElementById('offerDescInput').value = '';
+        document.getElementById('offerModalTitle').innerText = 'Add Bank Offer';
+        document.getElementById('offerModal').style.display = 'flex';
+    }
+    function closeOfferModal() {
+        document.getElementById('offerModal').style.display = 'none';
+    }
+
+    async function saveOffer(e) {
+        e.preventDefault();
+        const id = document.getElementById('offerId').value;
+        const title = document.getElementById('offerTitleInput').value;
+        const type = document.getElementById('offerTypeInput').value;
+        const desc = document.getElementById('offerDescInput').value;
+
+        // Server's /api/offers replaces the whole list at once.
+        let newList;
+        if (id) {
+            newList = offers.map(o => o.id == id ? { id: Number(id), title, type, desc } : o);
+        } else {
+            newList = [...offers, { id: Date.now(), title, type, desc }];
+        }
+
+        try {
+            await api('offers', { offers: newList });
+            closeOfferModal();
+            await loadManagerDashboard();
+        } catch (err) {
+            alert('Save failed: ' + err.message);
+        }
+    }
+
+    function editOffer(id) {
+        const o = offers.find(item => item.id === id);
+        if (!o) return;
+        document.getElementById('offerId').value = o.id;
+        document.getElementById('offerTitleInput').value = o.title;
+        document.getElementById('offerTypeInput').value = o.type;
+        document.getElementById('offerDescInput').value = o.desc;
+        document.getElementById('offerModalTitle').innerText = 'Edit Bank Offer';
+        document.getElementById('offerModal').style.display = 'flex';
+    }
+
+    async function deleteOffer(id) {
+        if (!confirm('Are you sure you want to delete this bank offer?')) return;
+        const newList = offers.filter(o => o.id !== id);
+        try {
+            await api('offers', { offers: newList });
+            await loadManagerDashboard();
+        } catch (err) {
+            alert('Delete failed: ' + err.message);
+        }
+    }
+
+    // ---- APPLICATION status change (staff or admin) ----
+    async function markApp(id, status) {
+        try {
+            await api('update', { id, status });
+            // Reload depending on role
+            if (role() === 'staff') loadStaffDashboard();
+            else loadManagerDashboard();
+        } catch (err) {
+            alert('Update failed: ' + err.message);
+        }
+    }
+
+    // ---- Utility ----
+    function escapeHtml(s) {
+        return String(s ?? '').replace(/[&<>"']/g, c => ({
+            '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;'
+        }[c]));
+    }
+
+    function showSection(sectionId, btnElem = null) {
+        document.querySelectorAll('.section').forEach(s => s.classList.remove('active'));
+        document.getElementById(sectionId).classList.add('active');
+        if (btnElem) {
+            document.querySelectorAll('.nav-btn').forEach(b => b.classList.remove('active'));
+            btnElem.classList.add('active');
+        }
+    }
+</script>
+
+</body>
+</html>
